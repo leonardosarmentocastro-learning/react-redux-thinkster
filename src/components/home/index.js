@@ -7,10 +7,20 @@ import {connect}  from 'react-redux';
 /**
  * Project packages.
  */
+import agent    from './../../agent';
 import Banner   from './banner';
 import MainView from './main-view';
 
 class Home extends React.Component {
+  componentWillMount() {
+    /**
+     * This will be resolved by the "middleware.js", which will wait for this Promise
+     * to be resolved and then transform the "payload" into the actual JSON of "Articles".
+     */
+    const payload = agent.Articles.all();
+    this.props.onLoad(payload);
+  }
+
   render() {
     const template = (
       <div className="home-page">
@@ -42,8 +52,21 @@ const mapStateToProps = (state, ownProps = {}) => {
   return props;
 };
 
-/**
- * I still don't know which function is that so I will call it "fn".
- */
-const fn = () => ({});
-export default connect(mapStateToProps, fn)(Home);
+const mapDispatchToProps = (dispatch) => {
+  const props = {
+    /**
+     * This will enable the component "Home" to call the function "onLoad" on the
+     * "componentWillMount" method, passing the "agent.Articles.all()" as a payload.
+     * NOTE: This seems a bit weird for me, because the "payload" will be the Promise and
+     * and the "payload" converted as a JSON itself, but.. lets get going.
+     */
+    onLoad: function(payload) {
+      const action = {type: 'HOME_PAGE_LOADED', payload};
+      return dispatch(action);
+    }
+  };
+
+  return props;
+};
+
+  export default connect(mapStateToProps, mapDispatchToProps)(Home);

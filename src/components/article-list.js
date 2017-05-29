@@ -1,8 +1,15 @@
+/**
+ * NPM packages.
+ */
 import React from 'react';
+
+/**
+ * Project packages.
+ */
+import ArticlePreview from './article-preview';
 
 const ArticleList = props => {
   const articles = props.articles;
-
   if (!articles) {
     const template = (
       <div className="article-preview">Loading...</div>
@@ -23,7 +30,7 @@ const ArticleList = props => {
       {
         articles.map(article => {
           const template = (
-            <h2>{article.title}</h2>
+            <ArticlePreview article={article}/>
           );
           return template;
         })
